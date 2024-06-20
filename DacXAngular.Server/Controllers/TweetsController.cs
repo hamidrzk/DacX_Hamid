@@ -1,7 +1,6 @@
 using DacXAngular.Entities;
 using DacXAngular.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using NetCoreAPI1.Controllers;
 
 namespace DacXAngular.Server.Controllers
 {
@@ -28,8 +27,14 @@ namespace DacXAngular.Server.Controllers
 			return _tweetRepository.GetTopTweets(10);
 		}
 
-		[HttpPost("send")] // api/Tweets
-		public Tweet Send(Tweet tweet)
+		[HttpGet("{id}")] // api/Tweets/id
+		public Tweet Get(int id)
+		{
+			return _tweetRepository.GetTweetData(id);
+		}
+
+		[HttpPost("send")] // api/Tweets/send
+		public Tweet Send([FromBody] Tweet tweet)
 		{
 			Tweet result = null;
 			var member = _memberRepository.GetMemberByEmail(tweet.Sender.Email);
@@ -44,6 +49,34 @@ namespace DacXAngular.Server.Controllers
 			}
 			return result;
 		}
-			
+
+
+
+		[HttpPut] // api/Tweets
+		public Tweet Put([FromBody] Tweet tweet)
+		{
+			Tweet result = null;
+			if (tweet != null && tweet.Id > 0)
+			{
+				int num = _tweetRepository.UpdateTweet(tweet);
+				if (num > 0)
+				{
+					result = _tweetRepository.GetTweetData(tweet.Id);
+				}
+			}
+			return result;
+		}
+
+		[HttpDelete("{id}")] // api/Tweets
+		public int Delete(int id)
+		{
+			int result = 0;
+			var tweet = _tweetRepository.GetTweetData(id);
+			if (tweet != null)
+			{
+				result = _tweetRepository.DeleteTweet(id);
+			}
+			return result;
+		}
 	}
 }

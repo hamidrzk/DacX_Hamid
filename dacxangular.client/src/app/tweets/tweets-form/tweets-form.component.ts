@@ -30,19 +30,25 @@ export class TweetsFormComponent implements OnInit {
   //Create FormGroup
   tweetForm: FormGroup;
   constructor(private fb: FormBuilder, private http: HttpClient) {
-    this.myForm();
+    this.initForm();
   }
 
-  //Create required field validator for name
-  myForm() {
+  emailControl: FormControl;
+  messageControl: FormControl;
+  alertControl: FormControl;
+  nameControl: FormControl;
+  initForm() {
     this.tweetForm = this.fb.group({
-      tweetId: [{ value: 0, disabled: true }, Validators.required],
       message: ['', Validators.required],
-      email: ['', Validators.required]
+      email: ['', Validators.required,Validators.email],
+      name: [''],
     });
-    //this.tweetForm.controls['tweetId'].disable();
+    this.emailControl = new FormControl('', [Validators.required, Validators.email]);
+    this.messageControl = new FormControl('', [Validators.required, Validators.minLength(1), Validators.maxLength(140)]);
+    this.nameControl = new FormControl("");
+    this.alertControl = new FormControl({ value: '', disabled: true });
   }
-
+  alertText: string = '';
   model: Tweet = {
     message:'',
     "id": 0,
@@ -51,7 +57,7 @@ export class TweetsFormComponent implements OnInit {
     "sender": {
       "id": 0,
       "name": '',
-      "email": 'Email1742@dac.test'     
+      "email": ''     
     }
   };
 
@@ -65,15 +71,14 @@ export class TweetsFormComponent implements OnInit {
   }
 
   postTweet() {
-    //console.log("this.model=" + JSON.stringify(this.model));
+    console.log("this.model=" + this.model);
     this.http.post<Tweet>('/api/tweets/send', this.model).subscribe(
       (result) => {
         window.location.reload();
-        //this.model.id = result.id;
-        //this.model.sender.id = result.sender.id;
       },
       (error) => {
         console.error(error);
+        this.alertText = "An error happened during the sending message";
       }
     );
   }

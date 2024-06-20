@@ -7,7 +7,7 @@ namespace DacXAngular.Interfaces
 		public IEnumerable<Tweet> GetTopTweets(int top);
 		public Tweet GetTweetData(int id);
 		public Tweet AddTweet(Tweet tweet);
-		public void UpdateTweet(Tweet tweet);
-		public void DeleteTweet(int? id);
+		public int UpdateTweet(Tweet tweet);
+		public int DeleteTweet(int id);
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using DacXAngular.Entities;
 using DacXAngular.Interfaces;
 using Microsoft.Data.SqlClient;
+using System;
 using System.Data;
 
 namespace DacXAngular.Server.Data
@@ -107,8 +108,9 @@ namespace DacXAngular.Server.Data
 			return result;
 		}
 
-		public void UpdateTweet(Tweet tweet)
+		public int UpdateTweet(Tweet tweet)
 		{
+			int result = 0;
 			using (SqlConnection con = new SqlConnection(_connectionString))
 			{
 				string sqlQuery =
@@ -118,7 +120,6 @@ namespace DacXAngular.Server.Data
 				[PostDate] = @PostDate
 				WHERE [Id] = @Id";
 				SqlCommand cmd = new SqlCommand(sqlQuery, con);
-				cmd.CommandType = CommandType.Text;
 				cmd.Parameters.AddWithValue("@Id", tweet.Id);
 				cmd.Parameters.AddWithValue("@Message", tweet.Message);
 				cmd.Parameters.AddWithValue("@PostDate", tweet.PostDate);
@@ -127,20 +128,22 @@ namespace DacXAngular.Server.Data
 				cmd.ExecuteNonQuery();
 				con.Close();
 			}
+			return result;
 		}
 
-		public void DeleteTweet(int? id)
+		public int DeleteTweet(int id)
 		{
+			int result = 0;
 			using (SqlConnection con = new SqlConnection(_connectionString))
 			{
 				string sqlQuery = @"DELETE FROM [dbo].[Tweets] WHERE Id = @Id";
 				SqlCommand cmd = new SqlCommand(sqlQuery, con);
-				cmd.CommandType = CommandType.Text;
 				cmd.Parameters.AddWithValue("@Id", id);
 				con.Open();
-				cmd.ExecuteNonQuery();
+				result = cmd.ExecuteNonQuery();
 				con.Close();
 			}
+			return result;
 		}
 	}
 }

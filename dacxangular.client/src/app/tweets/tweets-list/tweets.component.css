@@ -1,0 +1,21 @@
+th {
+  padding: 0 35px;
+}
+
+table {
+  border-collapse: collapse;
+  border: 1px solid #808080;
+}
+
+table td, table th {
+  border: 1px solid #808080;
+}
+
+table th {
+  background-color: #e0e0e0;
+}
+
+p.left-msg {
+  text-align: left;
+  padding-left: 20px;
+}

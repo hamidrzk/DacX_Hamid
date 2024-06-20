@@ -1,0 +1,27 @@
+
+<div id="tweet-list">
+  <p class="left-msg">The Most Recent Tweets</p>
+
+  <p *ngIf="!tweets"><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationangular">https://aka.ms/jspsintegrationangular</a> for more details.</em></p>
+
+  <table *ngIf="tweets">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Post Date</th>
+        <th>Message</th>
+        <th>Sender Name</th>
+        <th>Sender Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let forecast of tweets">
+        <td>{{ forecast.id }}</td>
+        <td>{{ forecast.postDate }}</td>
+        <td>{{ forecast.message }}</td>
+        <td>{{ forecast.sender.name }}</td>
+        <td>{{ forecast.sender.email }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

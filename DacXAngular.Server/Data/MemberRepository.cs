@@ -1,0 +1,144 @@
+﻿using DacXAngular.Entities;
+using DacXAngular.Interfaces;
+using Microsoft.Data.SqlClient;
+using System.Data;
+
+namespace DacXAngular.Server.Data
+{
+	public class MemberRepository : IMemberRepository
+	{
+		private readonly string _connectionString;
+
+		public MemberRepository(IConfiguration config)
+		{
+			_connectionString = config.GetConnectionString("DAC");
+		}
+
+		public IEnumerable<Member> GetTopMembers(int top)
+		{
+			List<Member> lstMember = new List<Member>();
+			using (SqlConnection con = new SqlConnection(_connectionString))
+			{
+				string sqlQuery = "SELECT TOP(@Top) * FROM [Members] ORDER BY [Id] DESC";
+				SqlCommand cmd = new SqlCommand(sqlQuery, con);
+				cmd.CommandType = CommandType.Text;
+				cmd.Parameters.AddWithValue("@Top", top);
+				con.Open();
+				SqlDataReader rdr = cmd.ExecuteReader();
+
+				while (rdr.Read())
+				{
+					Member user = new Member();
+					user.Id = Convert.ToInt32(rdr["Id"]);
+					user.Name = rdr["Name"].ToString();
+					user.Email = rdr["Email"].ToString();
+					lstMember.Add(user);
+				}
+				con.Close();
+			}
+			return lstMember;
+		}
+
+		public Member AddMember(Member member)
+		{
+			Member result = null;
+			int id = 0;
+			using (SqlConnection con = new SqlConnection(_connectionString))
+			{
+				string sqlQuery =
+					@"INSERT INTO [Memebers] ([Name],[Email])
+					VALUES (@Name, @Email) SELECT SCOPE_IDENTITY()";
+				SqlCommand cmd = new SqlCommand(sqlQuery, con);
+				cmd.CommandType = CommandType.Text;
+				cmd.Parameters.AddWithValue("@Name", member.Name);
+				cmd.Parameters.AddWithValue("@Email", member.Email);
+				con.Open();
+				cmd.ExecuteScalar();
+				con.Close();
+			}
+			if(id > 0)
+			{
+				result = GetMemberData(id);
+			}
+			return result;
+		}
+
+		public void UpdateMember(Member user)
+		{
+			using (SqlConnection con = new SqlConnection(_connectionString))
+			{
+				string sqlQuery =
+				@"UPDATE [Members] SET 
+				[Name] = @Name,
+				[Email] = @Email,
+				WHERE [Id] = @Id";
+				SqlCommand cmd = new SqlCommand(sqlQuery, con);
+				cmd.CommandType = CommandType.Text;
+				cmd.Parameters.AddWithValue("@Id", user.Id);
+				cmd.Parameters.AddWithValue("@Name", user.Name);
+				cmd.Parameters.AddWithValue("@Email", user.Email);
+				con.Open();
+				cmd.ExecuteNonQuery();
+				con.Close();
+			}
+		}
+
+		public Member GetMemberData(int id)
+		{
+			Member user = new Member();
+
+			using (SqlConnection con = new SqlConnection(_connectionString))
+			{
+				string sqlQuery = "SELECT * FROM [Members] WHERE [Id] = @Id";
+				SqlCommand cmd = new SqlCommand(sqlQuery, con);
+				cmd.Parameters.AddWithValue("@Id", id);
+				con.Open();
+				SqlDataReader rdr = cmd.ExecuteReader();
+
+				while (rdr.Read())
+				{
+					user.Id = Convert.ToInt32(rdr["Id"]);
+					user.Name = rdr["Name"].ToString();
+					user.Email = rdr["Email"].ToString();
+				}
+			}
+			return user;
+		}
+
+		public Member GetMemberByEmail(string email)
+		{
+			Member user = new Member();
+
+			using (SqlConnection con = new SqlConnection(_connectionString))
+			{
+				string sqlQuery = "SELECT * FROM [Members] WHERE [Email] = @Email";
+				SqlCommand cmd = new SqlCommand(sqlQuery, con);
+				cmd.Parameters.AddWithValue("@Email", email);
+				con.Open();
+				SqlDataReader rdr = cmd.ExecuteReader();
+
+				while (rdr.Read())
+				{
+					user.Id = Convert.ToInt32(rdr["Id"]);
+					user.Name = rdr["Name"].ToString();
+					user.Email = rdr["Email"].ToString();
+				}
+			}
+			return user;
+		}
+
+		public void DeleteMember(int? id)
+		{
+			using (SqlConnection con = new SqlConnection(_connectionString))
+			{
+				string sqlQuery = @"DELETE FROM [dbo].[Members] WHERE Id = @Id";
+				SqlCommand cmd = new SqlCommand(sqlQuery, con);
+				cmd.CommandType = CommandType.Text;
+				cmd.Parameters.AddWithValue("@Id", id);
+				con.Open();
+				cmd.ExecuteNonQuery();
+				con.Close();
+			}
+		}
+	}
+}

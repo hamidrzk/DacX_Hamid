@@ -1,0 +1,47 @@
+<div class="tweet-form">
+  <h3>Send a tweet</h3>
+  <form [formGroup]="tweetForm">
+    <!-- ID -->
+    <div class="form-group">
+      <label class="center-block">
+        Id:
+        <input class="form-control" formControlName="tweetId" [ngModel]="model.id">
+      </label>
+    </div>
+
+    <!-- MESSAGE -->
+    <div class="form-group">
+      <label class="center-block">
+        Message:
+        <input class="form-control" formControlName="message" [(ngModel)]="model.message" required>
+      </label>
+    </div>
+    <!-- <div *ngIf="tweetForm.controls['message'].invalid && tweetForm.controls['message'].touched" class="alert alert-danger">
+      <div *ngIf="tweetForm.controls['message'].errors?.required">
+        Message is required.
+      </div>
+    </div> -->
+    <!-- EMAIL -->
+    <div class="form-group">
+      <label class="center-block">
+        Email:
+        <input class="form-control" formControlName="email" [(ngModel)]="model.sender.email">
+      </label>
+    </div>
+    <!--     <div *ngIf="tweetForm.controls['email'].invalid && tweetForm.controls['email'].touched" class="alert alert-danger">
+          <div *ngIf="tweetForm.controls['email'].errors?.required">
+            Email is required.
+          </div>
+        </div> -->
+    <!-- NAME -->
+    <div class="form-group">
+      <label class="center-block">
+        Name:
+        <input class="form-control" formControlName="name" [(ngModel)]="model.sender.name">
+      </label>
+    </div>
+    <br />
+    <button class="btn btn-outline-success" type="submit" (click)="submitForm()">Send</button>
+
+  </form>
+</div>

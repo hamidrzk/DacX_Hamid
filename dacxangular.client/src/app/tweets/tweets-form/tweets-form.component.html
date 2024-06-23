@@ -1,60 +1,47 @@
-<div class="tweet-form">
-  <h3>Send a tweet</h3>
   <form [formGroup]="tweetForm">
-    <!-- ID -->
-    <!--     <div class="form-group">
-      <label class="center-block">
-        Id:
-        <input class="form-control" formControlName="tweetId" [ngModel]="model.id">
-      </label>
-    </div> -->
-    <!-- MESSAGE -->
-    <div class="form-group">
-      <label class="center-block">
-        Message:
+  <div class="tweet-form">
+    <div class="col-6 center-block">
+      <h3>Send a tweet</h3>
+      <!-- MESSAGE -->
+      <div class="form-group">
+        <label class="center-block">Message:</label>
         <textarea rows="4" cols="100" minlength="1" maxlength="140" placeholder="maximum 140 characters"
-                  class="form-control" [formControl]="messageControl" [(ngModel)]="model.message">
+                  class="form-control" formControlName="message" [(ngModel)]="model.message"
+                  [ngClass]="{ 'is-invalid': f['message'].dirty && f['message'].errors }">
         </textarea>
-      </label>
-    </div>
+        <div *ngIf="f['message'].errors" class="invalid-feedback">
+          <div *ngIf="f['message'].errors['required']">message is required</div>
+          <div *ngIf="f['message'].errors['minlength']">
+            message must be at least 2 characters
+          </div>
+          <div *ngIf="f['message'].errors['maxlength']">
+            message must not exceed 140 characters
+          </div>
+        </div>
 
-    <!-- EMAIL -->
-    <div class="form-group">
-      <label class="center-block">
-        Email:
-        <input class="form-control" [formControl]="emailControl" [(ngModel)]="model.sender.email" required placeholder="Email" >
-      </label>
-    </div>
-    <div *ngIf="emailControl.invalid && (emailControl.dirty || emailControl.touched)"
-         class="alert alert-danger">
-      <div *ngIf="emailControl.errors?.required">
-        Email is required.
-      </div>
-      <div *ngIf="emailControl.errors?.email">
-        Please enter a valid email.
+
       </div>
 
+      <!-- EMAIL -->
+      <div class="mb-3">
+        <label class="center-block">Email of the sender:</label>
+        <input type="email" class="form-control" formControlName="email"
+               [(ngModel)]="model.sender.email" required placeholder="name@example"
+               [ngClass]="{ 'is-invalid': f['email'].dirty && f['email'].errors }">
+      </div>
+      <div *ngIf="f['email'].dirty && f['email'].errors" class="invalid-feedback d-block">
+        <div *ngIf="f['email'].errors['required']">Email is required</div>
+        <div *ngIf="f['email'].errors['email']">Email is invalid</div>
+      </div>
 
+      <div class="mt-2">
+        <button id="submit-btn" class="btn btn-primary" type="submit" (click)="submitForm()" [disabled]="submitted">Send</button>
+      </div>
+      <br />
+      <!-- Alert -->
+      <div class="form-group">
+        <span class="text-danger">{{alertText}}</span>
+      </div>
     </div>
-
-    <!-- NAME -->
-    <div class="form-group">
-      <label class="center-block">
-        Name:
-        <input class="form-control" [formControl]="nameControl" [(ngModel)]="model.sender.name" placeholder="Sender Name">
-      </label>
-    </div>
-    <br />
-    <button class="btn btn-outline-success" type="submit" (click)="submitForm()">Send</button>
-    <br />
-    <!-- Alert -->
-    <div class="form-group">
-      <label class="center-block">
-        Result:
-        <input class="form-control" [formControl]="alertControl" [ngModel]="alertText">
-      </label>
-    </div>
-
-
-  </form>
-</div>
+  </div>
+</form>

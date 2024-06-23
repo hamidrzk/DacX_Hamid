@@ -19,6 +19,15 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+if (app.Environment.IsDevelopment())
+{
+	app.UseExceptionHandler("/error-development");
+}
+else
+{
+	app.UseExceptionHandler("/error");
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

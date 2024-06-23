@@ -1,0 +1,28 @@
+<form [formGroup]="memberForm">
+  <div class="member-form">
+    <div class="col-6 center-block">
+      <h3>Delete a member</h3>
+      <!-- EMAIL -->
+      <div class="mb-3">
+        <label class="center-block">Email Of The Member:</label>
+        <input type="email" class="form-control" formControlName="email"
+               [(ngModel)]="memberEmail" required placeholder="name@example"
+               [ngClass]="{ 'is-invalid': f['email'].dirty && f['email'].errors }">
+      </div>
+      <div *ngIf="f['email'].dirty && f['email'].errors" class="invalid-feedback d-block">
+        <div *ngIf="f['email'].errors['required']">Email is required</div>
+        <div *ngIf="f['email'].errors['email']">Email is invalid</div>
+      </div>
+      <div class="mt-2">
+        <button id="submit-btn" class="btn btn-warning" (click)="submitForm()" [disabled]="submitted">Delete</button>
+      </div>
+      <br />
+      <!-- Alert -->
+      <div class="form-group">
+        <span class="text-danger">{{alertText}}</span>
+      </div>
+    </div>
+  </div>
+</form>
+
+

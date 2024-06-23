@@ -51,7 +51,7 @@ namespace DacXAngular.Server.Data
 				cmd.Parameters.AddWithValue("@Name", member.Name);
 				cmd.Parameters.AddWithValue("@Email", member.Email);
 				con.Open();
-				cmd.ExecuteScalar();
+				id = Convert.ToInt32(cmd.ExecuteScalar());
 				con.Close();
 			}
 			if(id > 0)

@@ -1,21 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-
-interface Member {
-  "id": number,
-  "name": string,
-  "email": string
-}
-
-
-interface Tweet {
-  "id": number
-  "message": string,
-  "memberId": number,
-  "postDate": Date,
-  "sender": Member
-}
-
+import { Tweet } from '../../_models/tweet'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tweets',
@@ -25,7 +11,7 @@ interface Tweet {
 
 export class TweetsComponent implements OnInit {
   public tweets: Tweet[] = [];
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
   ngOnInit() {
     this.getTweets();
   }
@@ -39,5 +25,9 @@ export class TweetsComponent implements OnInit {
         console.error(error);
       }
     );
-  }  
+  }
+
+  gotoTweet() {
+    this.router.navigateByUrl("/tweets-form")
+  }
 }

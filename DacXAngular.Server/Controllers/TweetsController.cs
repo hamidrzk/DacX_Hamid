@@ -34,20 +34,17 @@ namespace DacXAngular.Server.Controllers
 		}
 
 		[HttpPost("send")] // api/Tweets/send
-		public Tweet Send([FromBody] Tweet tweet)
+		public ActionResult<Tweet> Send([FromBody] Tweet tweet)
 		{
 			Tweet result = null;
 			var member = _memberRepository.GetMemberByEmail(tweet.Sender.Email);
-			if (member == null) //if a member doesn't exist, it creates a new one
+			if (member == null)
 			{
-				member = _memberRepository.AddMember(tweet.Sender);
+				return BadRequest($"A member with email:[{tweet.Sender.Email}] doesn't exist!");
 			}
-			if(member != null)
-			{
-				tweet.MemberId = member.Id;
-				result = _tweetRepository.AddTweet(tweet);
-			}
-			return result;
+			tweet.MemberId = member.Id;
+			result = _tweetRepository.AddTweet(tweet);
+			return Ok(result);
 		}
 
 

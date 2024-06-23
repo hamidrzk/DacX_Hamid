@@ -1,1 +1,27 @@
-<p>members works!</p>
+<div id="member-list">
+  <p class="left-msg">The Most Recent Tweets</p>
+  <p *ngIf="!members"><em>Loading Tweets...</em> </p>
+  <table *ngIf="members">
+    <thead>
+      <tr>
+        <th>Member ID</th>
+        <th>Maember Name</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let member of members">
+        <td>{{ member.id }}</td>
+        <td>{{ member.name }}</td>
+        <td>{{ member.email }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="text-start mt-2">
+    <button class="btn btn-primary" (click)="addNewMember()">Add a new Member</button>
+    <button class="btn btn-warning" (click)="deleteMember()">Delete a Member</button>
+  </div>
+
+</div>
+

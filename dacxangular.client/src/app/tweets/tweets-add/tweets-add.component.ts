@@ -3,20 +3,19 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router'
 import { AbstractControl, FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Member } from '../../_models/member';
-
+import { Tweet } from '../../_models/tweet';
 
 @Component({
-  selector: 'app-members-form',
-  templateUrl: './members-form.component.html',
-  styleUrls: ['./members-form.component.css']
+  selector: 'app-tweets-add',
+  templateUrl: './tweets-add.component.html',
+  styleUrls: ['./tweets-add.component.css']
 })
 
-export class MembersFormComponent implements OnInit {
+export class TweetsAddComponent implements OnInit {
 
   //Create FormGroup
-  memberForm: FormGroup = new FormGroup({
-    name: new FormControl(''),
+  tweetForm: FormGroup = new FormGroup({
+    message: new FormControl(''),
     email: new FormControl(''),
   });
 
@@ -27,13 +26,20 @@ export class MembersFormComponent implements OnInit {
   }
 
   get f(): { [key: string]: AbstractControl } {
-    return this.memberForm.controls;
+    return this.tweetForm.controls;
   }
 
   initForm() {
-    this.memberForm = this.formBuilder.group(
+    this.tweetForm = this.formBuilder.group(
       {
-        name: ['', Validators.required],
+        message: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(2),
+            Validators.maxLength(140)
+          ]
+        ],
         email: ['', [Validators.required, Validators.email]],
       }
     );
@@ -42,42 +48,44 @@ export class MembersFormComponent implements OnInit {
   alertText: string = '';
   submitted: boolean = false;
 
-  model: Member = {
+  model: Tweet = {
+    message:'',
     "id": 0,
-    "name": '',
-    "email": ''
+    "memberId": 0,
+    "postDate": new Date(),
+    "sender": {
+      "id": 0,
+      "name": '',
+      "email": ''     
+    }
   };
 
   submitForm() {
-    this.alertText = "";
     this.submitted = true;
-    this.postMember();
+    this.postTweet();
   }
 
   ngOnInit(): void {
   }
 
-  postMember() {
+  postTweet() {
+    this.alertText = "";
     console.log("this.model=" + this.model);
-    this.http.post<Member>('/api/members/save', this.model).subscribe(
+    this.http.post<Tweet>('/api/tweets/send', this.model).subscribe(
       (result) => {
         if (result) {
-          this.alertText = "The new member is successfully added";
-          setTimeout(() => {
-            this.router.navigateByUrl('/members');
-          }, 2000);
-          
+          //window.location.reload();
+          this.router.navigateByUrl('/tweets');
         }
         else {
           this.alertText = result;
         }
       },
       (ex) => {
-        this.alertText = ex.error;
         console.error(ex);
+        this.alertText = ex.error;
         this.submitted = false;
       }
     );
   }
 }
-

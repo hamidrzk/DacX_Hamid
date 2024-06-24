@@ -96,7 +96,7 @@ namespace DacXAngular.Server.Data
 				cmd.CommandType = CommandType.Text;
 				cmd.Parameters.AddWithValue("@Message", tweet.Message);
 				cmd.Parameters.AddWithValue("@MemberId", tweet.MemberId);
-				cmd.Parameters.AddWithValue("@PostDate", tweet.PostDate);
+				cmd.Parameters.AddWithValue("@PostDate", DateTime.Now);
 				con.Open();
 				id = Convert.ToInt32(cmd.ExecuteScalar());
 				con.Close();
@@ -116,16 +116,14 @@ namespace DacXAngular.Server.Data
 				string sqlQuery =
 				@"UPDATE [Tweets] SET 
 				[Message] = @Message,
-				[MemberId] = @MemberId,
 				[PostDate] = @PostDate
 				WHERE [Id] = @Id";
 				SqlCommand cmd = new SqlCommand(sqlQuery, con);
 				cmd.Parameters.AddWithValue("@Id", tweet.Id);
 				cmd.Parameters.AddWithValue("@Message", tweet.Message);
-				cmd.Parameters.AddWithValue("@PostDate", tweet.PostDate);
-				cmd.Parameters.AddWithValue("@MemberId", tweet.MemberId);
+				cmd.Parameters.AddWithValue("@PostDate", DateTime.Now);
 				con.Open();
-				cmd.ExecuteNonQuery();
+				result = cmd.ExecuteNonQuery();
 				con.Close();
 			}
 			return result;

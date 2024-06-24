@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { AppRoutingModule } from './app-routing.module';
 import { TweetsComponent } from './tweets/tweets-list/tweets.component';
-import { TweetsFormComponent } from './tweets/tweets-form/tweets-form.component';
+import { TweetsAddComponent } from './tweets/tweets-add/tweets-add.component';
 import { MembersComponent } from './members/members.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
@@ -15,6 +15,7 @@ import { ServerErrorComponent } from './errors/server-error/server-error.compone
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MembersFormComponent } from './members/members-form/members-form.component';
 import { MembersDeleteComponent } from './members/members-delete/members-delete.component';
+import { TweetsEditComponent } from './tweets/tweets-edit/tweets-edit.component';
 
 @NgModule({
   declarations: [
@@ -25,9 +26,10 @@ import { MembersDeleteComponent } from './members/members-delete/members-delete.
     HomeComponent,
     NotFoundComponent,
     ServerErrorComponent,
-    TweetsFormComponent,
+    TweetsAddComponent,
     MembersFormComponent,
     MembersDeleteComponent,
+    TweetsEditComponent,
   ],
   imports: [
     HttpClientModule,

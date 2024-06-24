@@ -28,6 +28,10 @@ export class TweetsComponent implements OnInit {
   }
 
   gotoTweet() {
-    this.router.navigateByUrl("/tweets-form")
+    this.router.navigateByUrl("/tweets-add");
+  }
+
+  openEdit(id: number) {
+    this.router.navigateByUrl('/tweets-edit/' + id , { state: { id: id } });
   }
 }

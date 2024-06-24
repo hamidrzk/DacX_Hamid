@@ -49,7 +49,7 @@ namespace DacXAngular.Server.Controllers
 
 
 
-		[HttpPut] // api/Tweets
+		[HttpPut("update")] // api/Tweets/update
 		public Tweet Put([FromBody] Tweet tweet)
 		{
 			Tweet result = null;

@@ -1,0 +1,48 @@
+<form [formGroup]="tweetForm">
+  <div class="tweet-form">
+    <div class="col-6 center-block">
+      <h3>Edit a tweet</h3>
+      <!-- MESSAGE -->
+      <div class="form-group">
+        <label class="center-block">Message:</label>
+        <textarea rows="4" cols="100" minlength="1" maxlength="140" placeholder="maximum 140 characters"
+                  class="form-control" formControlName="message" [(ngModel)]="model.message"
+                  [ngClass]="{ 'is-invalid': f['message'].dirty && f['message'].errors }">
+        </textarea>
+        <div *ngIf="f['message'].errors" class="invalid-feedback">
+          <div *ngIf="f['message'].errors['required']">message is required</div>
+          <div *ngIf="f['message'].errors['minlength']">
+            message must be at least 2 characters
+          </div>
+          <div *ngIf="f['message'].errors['maxlength']">
+            message must not exceed 140 characters
+          </div>
+        </div>
+      </div>
+
+      <!-- NAME -->
+      <div class="mb-3">
+        <label class="center-block">Name of the sender:</label>
+        <input type="email" class="form-control" [value]="model.sender.name" [disabled]="true">
+      </div>
+
+      <!-- EMAIL -->
+      <div class="mb-3">
+        <label class="center-block">Email of the sender:</label>
+        <input type="email" class="form-control" [value]="model.sender.email" [disabled]="true">
+      </div>
+
+
+
+
+      <div class="mt-2">
+        <button id="submit-btn" class="btn btn-primary" type="submit" (click)="submitForm()" [disabled]="submitted">Send</button>
+      </div>
+      <br />
+      <!-- Alert -->
+      <div class="form-group">
+        <span class="text-danger">{{alertText}}</span>
+      </div>
+    </div>
+  </div>
+</form>

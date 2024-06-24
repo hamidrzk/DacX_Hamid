@@ -10,6 +10,5 @@
   <ItemGroup>
     <Folder Include="src\app\errors\" />
     <Folder Include="src\app\_modules\" />
-    <Folder Include="src\app\tweets\tweets-form\" />
   </ItemGroup>
 </Project>

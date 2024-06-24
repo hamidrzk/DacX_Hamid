@@ -1,14 +1,15 @@
 <div id="tweet-list">
-  <p class="left-msg">The Most Recent Tweets</p>
+  <h3 class="left-msg">The Most Recent Tweets</h3>
   <p *ngIf="!tweets"><em>Loading Tweets...</em> </p>
   <table *ngIf="tweets.length">
     <thead>
       <tr>
         <th>ID</th>
         <th>Post Date</th>
-        <th>Message</th>
+        <th class="th-message">Message</th>
         <th>Sender Name</th>
         <th>Sender Email</th>
+        <th>Action</th>
       </tr>
     </thead>
     <tbody>
@@ -18,6 +19,7 @@
         <td>{{ tweet.message }}</td>
         <td>{{ tweet.sender.name }}</td>
         <td>{{ tweet.sender.email }}</td>
+        <td><button type="button" class="btn btn-success btn-sm m-2" (click)="openEdit(tweet.id)">Edit</button></td>
       </tr>
     </tbody>
   </table>

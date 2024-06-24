@@ -5,7 +5,8 @@ import { MembersComponent } from './members/members.component';
 import { MembersFormComponent } from './members/members-form/members-form.component';
 import { MembersDeleteComponent } from './members/members-delete/members-delete.component';
 import { TweetsComponent } from './tweets/tweets-list/tweets.component';
-import { TweetsFormComponent } from './tweets/tweets-form/tweets-form.component';
+import { TweetsAddComponent } from './tweets/tweets-add/tweets-add.component';
+import { TweetsEditComponent } from './tweets/tweets-edit/tweets-edit.component';
 import { NotFoundComponent } from './errors/not-found/not-found.component';
 import { ServerErrorComponent } from './errors/server-error/server-error.component';
 
@@ -16,7 +17,8 @@ const routes: Routes = [
   { path: 'members-form', component: MembersFormComponent },
   { path: 'members-delete', component: MembersDeleteComponent },
 
-  { path: 'tweets-form', component: TweetsFormComponent },
+  { path: 'tweets-add', component: TweetsAddComponent },
+  { path: 'tweets-edit/:id', component: TweetsEditComponent },
   { path: 'tweets', component: TweetsComponent },
 
   { path: 'not-found', component: NotFoundComponent },

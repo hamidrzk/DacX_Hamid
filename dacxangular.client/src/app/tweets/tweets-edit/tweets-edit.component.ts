@@ -1,27 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 import { AbstractControl, FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Observable, map } from 'rxjs';
 
 import { Tweet } from '../../_models/tweet';
 
 @Component({
-  selector: 'app-tweets-form',
-  templateUrl: './tweets-form.component.html',
-  styleUrls: ['./tweets-form.component.css']
+  selector: 'app-tweets-edit',
+  templateUrl: './tweets-edit.component.html',
+  styleUrls: ['./tweets-edit.component.css']
 })
 
-export class TweetsFormComponent implements OnInit {
-
+export class TweetsEditComponent implements OnInit {
   //Create FormGroup
   tweetForm: FormGroup = new FormGroup({
     message: new FormControl(''),
-    name: new FormControl(''),
-    email: new FormControl(''),
   });
+
+  state$: Observable<object>;
 
   constructor(private formBuilder: FormBuilder,
     private http: HttpClient,
+    private activatedRoute: ActivatedRoute,
     private router: Router) {
     this.initForm();
   }
@@ -49,35 +51,61 @@ export class TweetsFormComponent implements OnInit {
 
   alertText: string = '';
   submitted: boolean = false;
+  formState: object = {};
 
   model: Tweet = {
-    message:'',
+    message: '',
     "id": 0,
     "memberId": 0,
     "postDate": new Date(),
     "sender": {
       "id": 0,
       "name": '',
-      "email": ''     
+      "email": ''
     }
   };
 
   submitForm() {
     this.submitted = true;
-    this.postTweet();
+    this.updateTweet();
   }
 
+  sub: any;
   ngOnInit(): void {
+
+    this.sub = this.activatedRoute.paramMap.subscribe((params) => {
+      console.log(params);
+      const id = params.get('id');
+      if (id) {
+        this.getTweet(id);
+      }
+    });
+
+
+    
   }
 
-  postTweet() {
+  getTweet(id: string | null) {
+    this.http.get<Tweet>("/api/tweets/" + id).subscribe(
+      (result) => {
+        this.model = result;
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  updateTweet() {
     this.alertText = "";
     console.log("this.model=" + this.model);
-    this.http.post<Tweet>('/api/tweets/send', this.model).subscribe(
+    this.http.put<Tweet>('/api/tweets/update', this.model).subscribe(
       (result) => {
         if (result) {
-          //window.location.reload();
-          this.router.navigateByUrl('/tweets');
+          this.alertText = "The tweet is successfully updated";
+          setTimeout(() => {
+            this.router.navigateByUrl('/tweets');
+          }, 2000);
         }
         else {
           this.alertText = result;

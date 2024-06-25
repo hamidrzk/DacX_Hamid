@@ -1,11 +1,13 @@
 using DacXAngular.Entities;
 using DacXAngular.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DacXAngular.Server.Controllers
 {
 	[Route("api/[controller]")] // api/Tweets
 	[ApiController]
+	[Authorize]
 	public class TweetsController : ControllerBase
 	{
 		private readonly ITweetRepository _tweetRepository;

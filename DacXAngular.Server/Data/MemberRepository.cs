@@ -45,11 +45,13 @@ namespace DacXAngular.Server.Data
 			using (SqlConnection con = new SqlConnection(_connectionString))
 			{
 				string sqlQuery =
-					@"INSERT INTO [Members] ([Name],[Email])
-					VALUES (@Name, @Email) SELECT SCOPE_IDENTITY()";
+					@"INSERT INTO [Members] ([Name],[Email],[PasswordHash],[PasswordSalt])
+					VALUES (@Name, @Email,@PasswordHash,@PasswordSalt) SELECT SCOPE_IDENTITY()";
 				SqlCommand cmd = new SqlCommand(sqlQuery, con);
 				cmd.Parameters.AddWithValue("@Name", member.Name);
 				cmd.Parameters.AddWithValue("@Email", member.Email);
+				cmd.Parameters.AddWithValue("@PasswordHash", member.PasswordHash);
+				cmd.Parameters.AddWithValue("@PasswordSalt", member.PasswordSalt);
 				con.Open();
 				id = Convert.ToInt32(cmd.ExecuteScalar());
 				con.Close();
@@ -70,11 +72,15 @@ namespace DacXAngular.Server.Data
 				@"UPDATE [Members] SET 
 				[Name] = @Name,
 				[Email] = @Email,
+				[PasswordHash] = @PasswordHash,
+				[PasswordSalt] = @PasswordSalt,
 				WHERE [Id] = @Id";
 				SqlCommand cmd = new SqlCommand(sqlQuery, con);
 				cmd.Parameters.AddWithValue("@Id", user.Id);
 				cmd.Parameters.AddWithValue("@Name", user.Name);
 				cmd.Parameters.AddWithValue("@Email", user.Email);
+				cmd.Parameters.AddWithValue("@PasswordHash", user.PasswordHash);
+				cmd.Parameters.AddWithValue("@PasswordSalt", user.PasswordSalt);
 				con.Open();
 				result = cmd.ExecuteNonQuery();
 				con.Close();

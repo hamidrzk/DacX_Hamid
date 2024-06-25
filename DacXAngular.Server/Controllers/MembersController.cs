@@ -1,21 +1,31 @@
+using DacXAngular.DTOs;
 using DacXAngular.Entities;
 using DacXAngular.Interfaces;
 using DacXAngular.Server.Data;
+using DacXAngular.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DacXAngular.Server.Controllers
 {
 	[Route("api/[controller]")] // api/Members
 	[ApiController]
+	[Authorize]
 	public class MembersController : ControllerBase
 	{
 		private readonly IMemberRepository _memberRepository;
 		private readonly ILogger<MembersController> _logger;
+		private readonly ITokenService _tokenService;
+
 
 		public MembersController(IMemberRepository memberRepository,
+			ITokenService tokenService,
 			ILogger<MembersController> logger)
 		{
 			this._memberRepository = memberRepository;
+			this._tokenService = tokenService;
 			this._logger = logger;
 		}
 
@@ -26,55 +36,83 @@ namespace DacXAngular.Server.Controllers
 		}
 
 		[HttpGet("{id}")] // api/Members/id
-		public Member Get(int id)
+		public ActionResult<MemberDto> Get(int id)
 		{
-			return _memberRepository.GetMemberData(id);
+			var member = _memberRepository.GetMemberData(id);
+			if (member == null)
+			{
+				return NotFound("Not found");
+			}
+			return new MemberDto
+			{
+				Id = id,
+				Email = member.Email,
+				Name = member.Name,
+			};
 		}
 
-		[HttpPost("save")] // api/Members/save
-		public ActionResult<Member> Save([FromBody] Member member)
+		[HttpPost("save")] // POST: api/Members/register
+		public ActionResult<MemberDto> Save([FromBody] MemberDto memberDto)
 		{
-			Member result = null;
-			if (member == null || member.Id > 0)
+			if (memberDto == null || memberDto.Id == 0)
 			{
-				return BadRequest("Invaid data!");
+				return BadRequest("Bad request!");
 			}
-			try
+			var m = _memberRepository.GetMemberData(memberDto.Id);
+			if (m == null)
 			{
-				var m = _memberRepository.GetMemberByEmail(member.Email);
-				if (m != null)
-				{
-					return BadRequest($"The email: [{member.Email}] is already used by another member");
-				}
-				result = _memberRepository.AddMember(member);
+				return NotFound("Member not found!");
 			}
-			catch (Exception ex)
+
+			var member = MakeMember(memberDto);
+			_memberRepository.AddMember(member);
+
+			return new MemberDto
 			{
-				_logger.LogError(ex, "error in Save member method!");
-				return Problem("error in saving member!");
-			}
-			return Ok(result);
+				Email = member.Email,
+				Name = member.Name,
+				Token = _tokenService.CreateToken(member)
+			};
+		}
+
+		private Member MakeMember(MemberDto registerDto)
+		{
+			using var hmac = new HMACSHA512();
+			return new Member
+			{
+				Email = registerDto.Email,
+				Name = registerDto.Name,
+				PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+				PasswordSalt = hmac.Key
+			};
 		}
 
 		[HttpPut("update")] // api/Members/update
-		public ActionResult<Member> Update([FromBody] Member member)
+		public ActionResult<MemberDto> Update([FromBody] MemberDto memberDto)
 		{
 			Member result = null;
-			if (member == null || member.Id == 0)
+			if (memberDto == null)
 			{
 				return BadRequest("Invaid data!");
 			}
 			try
 			{
-				result = _memberRepository.GetMemberData(member.Id);
-				if (result == null)
+				if (memberDto.Id > 0)
 				{
-					return base.NotFound("Memer not found");
+					result = _memberRepository.GetMemberData(memberDto.Id);
 				}
-				int num = _memberRepository.UpdateMember(member);
-				if (num > 0)
+				else if (memberDto.Email != null) 
 				{
-					result = _memberRepository.GetMemberData(member.Id);
+					result = _memberRepository.GetMemberByEmail(memberDto.Email);
+				}
+				if (result != null)
+				{
+					var member = MakeMember(memberDto);
+					int num = _memberRepository.UpdateMember(member);
+					if (num > 0)
+					{
+						result = _memberRepository.GetMemberData(member.Id);
+					}
 				}
 			}
 			catch (Exception ex)
@@ -82,7 +120,15 @@ namespace DacXAngular.Server.Controllers
 				_logger.LogError(ex, "error in Update member method!");
 				return Problem("error in updating member!");
 			}
-			return result;
+			if (result == null)
+			{
+				return base.NotFound("Member not found");
+			}
+			return new MemberDto
+			{
+				Email = memberDto.Email,
+				Name = memberDto.Name,
+			};
 		}
 
 		[HttpDelete("{id}")] // api/Members/id
@@ -101,7 +147,7 @@ namespace DacXAngular.Server.Controllers
 		[HttpDelete("deleteByEmail")] // api/Members/deleteByEmail
 		public ActionResult<int> DeleteByEmail([FromBody] Member m)
 		{
-			if( m== null || string.IsNullOrWhiteSpace(m.Email))
+			if (m == null || string.IsNullOrWhiteSpace(m.Email))
 			{
 				return BadRequest("Invalid email!");
 			}

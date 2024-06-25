@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Tweet } from '../../_models/tweet'
 import { Router } from '@angular/router';
+import { AccountService } from '../../_services/account.service';
 
 @Component({
   selector: 'app-tweets',
@@ -11,7 +12,10 @@ import { Router } from '@angular/router';
 
 export class TweetsComponent implements OnInit {
   public tweets: Tweet[] = [];
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(
+    private accountService: AccountService,
+    private http: HttpClient,
+    private router: Router) { }
   ngOnInit() {
     this.getTweets();
   }

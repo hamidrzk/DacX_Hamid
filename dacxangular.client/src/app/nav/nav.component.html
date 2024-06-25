@@ -1,17 +1,34 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">DAC Technical Test</a>
+
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <div class="navbar-nav">
       <a class="nav-item nav-link active" href="#">Home</a>
-      <a class="nav-link" routerLink="/tweets" routerLinkActive="active">Latest Tweets</a>
-      <a class="nav-link" routerLink="/tweets-add" routerLinkActive="active">Send a Tweet</a>
-      <a class="nav-link" routerLink="/members" routerLinkActive="active">Members</a>
+      <ng-container *ngIf="accountService.currentUser$ | async">
+        <a class="nav-link" routerLink="/tweets" routerLinkActive="active">Latest Tweets</a>
+        <a class="nav-link" routerLink="/tweets-add" routerLinkActive="active">Send a Tweet</a>
+        <a class="nav-link" routerLink="/members" routerLinkActive="active">Members</a>
+      </ng-container>
       <a class="nav-link" routerLink="/members-form" routerLinkActive="active">Register</a>
     </div>
+
+    <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as cu" dropdown>
+      <button class="btn btn-secondary dropdown-toggle test-light text-decoration-none" dropdownToggle>Welcome {{cu.name}}</button>
+      <div class="dropdown-menu" *dropdownMenu>
+        <a class="dropdown-item" (click)="editProfile()">Edit Profile</a>
+        <a class="dropdown-item" (click)="logout()">Logout</a>
+      </div>
+    </div>
+
+    <form *ngIf="!(accountService.currentUser$| async)" #loginForm="ngForm" class="d-flex" (ngSubmit)="login()" autocomplete="off">
+      <input name="email" [(ngModel)]="model.email" class="form-control me-2" type="text" placeholder="User's Email">
+      <input name="password" [(ngModel)]="model.password" class="form-control me-2" type="password" placeholder="Password">
+      <button class="btn btn-outline-success me-2" type="submit">Login</button>
+    </form>
   </div>
 </nav>
 

@@ -1,0 +1,9 @@
+a.dropdown-toggle {
+  color: darkslateblue;
+}
+
+a.dropdown-toggle, a.dropdown-item {
+  cursor: pointer;
+}
+
+

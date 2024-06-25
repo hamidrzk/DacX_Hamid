@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace NetCoreAPI1.Controllers
+namespace DacXAngular.Controllers
 {
-	//[Route("/api/[controller]")] // api/<controller>
- // [ApiController]
- // public class BaseApiController : ControllerBase
- // {
-     
- // }
+  [Route("/api/[controller]")] // api/<controller>
+  [ApiController]
+  public class BaseApiController : ControllerBase
+  {
+
+  }
 }

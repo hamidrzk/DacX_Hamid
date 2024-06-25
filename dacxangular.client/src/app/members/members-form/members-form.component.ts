@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router'
 import { AbstractControl, FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Member } from '../../_models/member';
+import { AccountService } from '../../_services/account.service';
 
 
 @Component({
@@ -13,14 +15,18 @@ import { Member } from '../../_models/member';
 })
 
 export class MembersFormComponent implements OnInit {
+  [x: string]: any;
 
   //Create FormGroup
   memberForm: FormGroup = new FormGroup({
     name: new FormControl(''),
     email: new FormControl(''),
+    password: new FormControl(''),
   });
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(
+    private accountService: AccountService,
+    private formBuilder: FormBuilder,
     private http: HttpClient,
     private router: Router) {
     this.initForm();
@@ -35,6 +41,14 @@ export class MembersFormComponent implements OnInit {
       {
         name: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(2),
+            Validators.maxLength(16)
+          ]
+        ],
       }
     );
   }
@@ -42,29 +56,26 @@ export class MembersFormComponent implements OnInit {
   alertText: string = '';
   submitted: boolean = false;
 
-  model: Member = {
-    "id": 0,
-    "name": '',
-    "email": ''
-  };
+  member: Member = {} as Member;
 
   submitForm() {
     this.alertText = "";
     this.submitted = true;
-    this.postMember();
+    this.save();
   }
 
   ngOnInit(): void {
+    this.member = this.accountService.getCurrentUser();
   }
 
-  postMember() {
-    console.log("this.model=" + this.model);
-    this.http.post<Member>('/api/members/save', this.model).subscribe(
+  save() {
+    console.log("this.model=" + this.member);
+    this.http.post<Member>('/api/members/save', this.member).subscribe(
       (result) => {
         if (result) {
-          this.alertText = "The new member is successfully added";
+          this.alertText = "The new member is successfully registered";
           setTimeout(() => {
-            this.router.navigateByUrl('/members');
+            this.router.navigateByUrl('/tweets');
           }, 2000);
           
         }
@@ -78,6 +89,10 @@ export class MembersFormComponent implements OnInit {
         this.submitted = false;
       }
     );
+  }
+
+  cancel() {
+    this.router.navigateByUrl('/');
   }
 }
 

@@ -50,12 +50,7 @@ export class MembersDeleteComponent implements OnInit {
   }
 
   deleteMember() {
-    const member: Member = {
-      "id": 0,
-      "name": '',
-      "email": this.memberEmail,
-    };
-
+    const member: Member = {} as Member;
 
     const options = {
       headers: new HttpHeaders({

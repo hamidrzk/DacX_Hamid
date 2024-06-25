@@ -1,12 +1,18 @@
 <form [formGroup]="memberForm">
   <div class="member-form">
     <div class="col-6 center-block">
-      <h3>Register a new member</h3>
+      <h5>Member Profile form</h5>
+      <!-- Id -->
+      <div class="form-group">
+        <label class="center-block">Member Id:</label>
+        <input class="form-control" type="text" [value]="member?.id" [disabled]="true">
+      </div>
+
       <!-- NAME -->
       <div class="form-group">
         <label class="center-block">Full Name:</label>
         <input class="form-control" placeholder="Member's Name"
-               [(ngModel)]="model.name" formControlName="name"
+               [(ngModel)]="member.name" formControlName="name"
                [ngClass]="{ 'is-invalid': f['name'].dirty && f['name'].errors }">
       </div>
 
@@ -14,22 +20,34 @@
       <div class="mb-3">
         <label class="center-block">Email Address:</label>
         <input type="email" class="form-control" formControlName="email"
-               [(ngModel)]="model.email" required placeholder="name@example"
+               [(ngModel)]="member.email" required placeholder="name@example"
                [ngClass]="{ 'is-invalid': f['email'].dirty && f['email'].errors }">
       </div>
       <div *ngIf="f['email'].dirty && f['email'].errors" class="invalid-feedback d-block">
         <div *ngIf="f['email'].errors['required']">Email is required</div>
         <div *ngIf="f['email'].errors['email']">Email is invalid</div>
       </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label class="center-block">Password:</label>
+        <input name="password" [(ngModel)]="member.password" formControlName="password"
+               class="form-control" type="password" maxlength="140" placeholder="Password" autocomplete="off"
+               [ngClass]="{ 'is-invalid': f['password'].dirty && f['password'].errors }">
+      </div>
+
       <div class="mt-2">
-        <button id="submit-btn" class="btn btn-primary" type="submit" (click)="submitForm()" [disabled]="submitted">Save Member</button>
+        <button id="submit-btn" class="btn btn-primary me-2" type="submit" (click)="submitForm()" [disabled]="submitted">Save Member</button>
+        <button class="btn btn-default" type="button" (click)="cancel()">Cancel</button>
       </div>
       <br />
+
+
       <!-- Alert -->
       <div class="form-group">
         <span class="text-danger">{{alertText}}</span>
       </div>
     </div>
-  </div>
+    </div>
 </form>
 

@@ -3,9 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router'
 import { AbstractControl, FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { Tweet } from '../../_models/tweet';
+import { Member } from '../../_models/member';
 
 @Component({
   selector: 'app-tweets-edit',
@@ -58,11 +59,7 @@ export class TweetsEditComponent implements OnInit {
     "id": 0,
     "memberId": 0,
     "postDate": new Date(),
-    "sender": {
-      "id": 0,
-      "name": '',
-      "email": ''
-    }
+    "sender": {} as Member,
   };
 
   submitForm() {
@@ -72,7 +69,6 @@ export class TweetsEditComponent implements OnInit {
 
   sub: any;
   ngOnInit(): void {
-
     this.sub = this.activatedRoute.paramMap.subscribe((params) => {
       console.log(params);
       const id = params.get('id');
@@ -80,9 +76,6 @@ export class TweetsEditComponent implements OnInit {
         this.getTweet(id);
       }
     });
-
-
-    
   }
 
   getTweet(id: string | null) {

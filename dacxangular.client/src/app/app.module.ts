@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -16,6 +16,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MembersFormComponent } from './members/members-form/members-form.component';
 import { MembersDeleteComponent } from './members/members-delete/members-delete.component';
 import { TweetsEditComponent } from './tweets/tweets-edit/tweets-edit.component';
+import { MembersRegisterComponent } from './members/members-register/members-register.component';
+import { JwtInterceptor } from './_interceptors/jwt.interceptor';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 
 @NgModule({
   declarations: [
@@ -30,6 +33,7 @@ import { TweetsEditComponent } from './tweets/tweets-edit/tweets-edit.component'
     MembersFormComponent,
     MembersDeleteComponent,
     TweetsEditComponent,
+    MembersRegisterComponent,
   ],
   imports: [
     HttpClientModule,
@@ -37,9 +41,12 @@ import { TweetsEditComponent } from './tweets/tweets-edit/tweets-edit.component'
     BrowserAnimationsModule,
     AppRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BsDropdownModule.forRoot()
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -4,6 +4,8 @@ import { Router } from '@angular/router'
 import { AbstractControl, FormControl, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { Tweet } from '../../_models/tweet';
+import { Member } from '../../_models/member';
+import { AccountService } from '../../_services/account.service';
 
 @Component({
   selector: 'app-tweets-add',
@@ -16,10 +18,11 @@ export class TweetsAddComponent implements OnInit {
   //Create FormGroup
   tweetForm: FormGroup = new FormGroup({
     message: new FormControl(''),
-    email: new FormControl(''),
   });
 
-  constructor(private formBuilder: FormBuilder,
+  constructor(
+    private accountService: AccountService,
+    private formBuilder: FormBuilder,
     private http: HttpClient,
     private router: Router) {
     this.initForm();
@@ -40,24 +43,18 @@ export class TweetsAddComponent implements OnInit {
             Validators.maxLength(140)
           ]
         ],
-        email: ['', [Validators.required, Validators.email]],
       }
     );
   }
 
   alertText: string = '';
   submitted: boolean = false;
-
   model: Tweet = {
     message:'',
     "id": 0,
     "memberId": 0,
     "postDate": new Date(),
-    "sender": {
-      "id": 0,
-      "name": '',
-      "email": ''     
-    }
+    "sender": {} as Member,
   };
 
   submitForm() {
@@ -66,6 +63,7 @@ export class TweetsAddComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.model.sender = this.accountService.getCurrentUser();
   }
 
   postTweet() {
